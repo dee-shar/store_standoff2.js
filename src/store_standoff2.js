@@ -1,25 +1,35 @@
 class StoreStandoff2 {
 	constructor(userId) {
-		this.api = "https://store.standoff2.com/api/v1"
+		this.api = "https://store.standoff2.com/api"
 		this.headers = {
 			"content-type": "application/json",
-			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.114 Safari/537.36"
+			"user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/138.0.0.0 Safari/537.36"
 		}
 		this.userId = userId
 	}
 
 	async getAccountInfo() {
 		const response = await fetch(
-			`${this.api}/accounts/${this.userId}`, {
+			`${this.api}/v2/accounts`, {
+				method: "POST",
+				headers: this.headers,
+				body: JSON.stringify({ uid: this.userId })
+			})
+		return response.json()
+	}
+
+	async getProductsConfig() {
+		const response = await fetch(
+			`${this.api}/v2/productsConfig/${this.userId}`, {
 				method: "GET",
 				headers: this.headers
 			})
 		return response.json()
 	}
 
-	async getProducts() {
+	async getComponents() {
 		const response = await fetch(
-			`${this.api}/products/${this.userId}`, {
+			`${this.api}/v2/components`, {
 				method: "GET",
 				headers: this.headers
 			})
@@ -37,7 +47,7 @@ class StoreStandoff2 {
 
 	async activateCoupon(coupon) {
 		const response = await fetch(
-			`${this.api}/coupon`, {
+			`${this.api}/v1/coupon`, {
 				method: "POST",
 				body: JSON.stringify({
 					uid: this.userId,
@@ -48,29 +58,25 @@ class StoreStandoff2 {
 		return response.json()
 	}
 
-	async getPayment(email, inApps = [], processData = false, sendPromotions = true) {
+	async getPaymentForm(inApps = []) {
 		const response = await fetch(
-			`${this.api}/payments/`, {
+			`${this.api}/v1/payments/getPaymentForm`, {
 				method: "POST",
 				body: JSON.stringify({
-					uid: this.userId,
-					email: email,
 					inapps: inApps,
-					consents: {
-						processData: processData,
-						sendPromotions: sendPromotions
-					}
+					uid: this.userId
 				}),
 				headers: this.headers
 			})
 		return response.json()
 	}
 
-	async getPaymentStatus(paymentId) {
+	async getPaymentTokens() {
 		const response = await  fetch(
-			`${this.api}/payments/status/${paymentId}`, {
-				method: "GET",
-				headers: this.headers
+			`${this.api}/v1/payments/tokens`, {
+				method: "POST",
+				headers: this.headers,
+				body: JSON.stringify({ uid: this.userId })
 			})
 		return response.json()
 	}
