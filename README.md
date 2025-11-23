@@ -7,7 +7,7 @@ async function main() {
 	const { StoreStandoff2 } = require("./store_standoff2.js")
 	const storeStandoff2 = new StoreStandoff2("userId")
 	const accountInfo = await storeStandoff2.getAccountInfo()
-  	console.log(accountIndo)
+  	console.log(accountInfo)
 }
 
 main()
